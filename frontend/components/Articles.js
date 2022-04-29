@@ -4,12 +4,15 @@ import PT from 'prop-types'
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
+  const { articles, getArticles, deleteArticle, setCurrentArticleId, currentArticleId } = props
 
   // ✨ implement conditional logic: if no token exists
   // we should render a Navigate to login screen (React Router v.6)
 
+
   useEffect(() => {
     // ✨ grab the articles here, on first render only
+    
   })
 
   return (

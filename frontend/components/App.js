@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { NavLink, Routes, Route, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import Articles from './Articles'
 import LoginForm from './LoginForm'
 import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
+import { ProtectedRoute } from '../axios'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -30,12 +32,27 @@ export default function App() {
   }
 
   const login = ({ username, password }) => {
+
     // ✨ implement
     // We should flush the message state, turn on the spinner
     // and launch a request to the proper endpoint.
     // On success, we should set the token to local storage in a 'token' key,
     // put the server success message in its proper state, and redirect
     // to the Articles screen. Don't forget to turn off the spinner!
+    // console.log('login', username, password)
+     setMessage('')
+     setSpinnerOn(true)
+    axios
+      .post(loginUrl, { username, password })
+      .then(res => {
+        console.log(res)
+        localStorage.setItem('token', res.data.token)
+        setMessage(res.data.message)
+        navigate('/articles', {replace:true}) 
+        setSpinnerOn(false)
+
+      })
+      .catch(err => console.log({err}))
   }
 
   const getArticles = () => {
@@ -68,8 +85,8 @@ export default function App() {
   return (
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <React.StrictMode>
-      <Spinner />
-      <Message />
+      <Spinner on={spinnerOn} />
+      <Message message={message} />
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
         <h1>Advanced Web Applications</h1>
@@ -78,13 +95,24 @@ export default function App() {
           <NavLink id="articlesScreen" to="/articles">Articles</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<LoginForm  login={login}/>} />
+
+{/*           <ProtectedRoute path='articles'>
+          <>
+              <ArticleForm />
+              <Articles />
+          </>
+          </ProtectedRoute>
+ */}
+          
           <Route path="articles" element={
             <>
               <ArticleForm />
               <Articles />
             </>
           } />
+
+  
         </Routes>
         <footer>Bloom Institute of Technology 2022</footer>
       </div>
