@@ -1,6 +1,21 @@
 // ✨ implement axiosWithAuth
-import React from "react";
-import { Route, Redirect } from 'react-router-dom'
+import axios from "axios";
+
+export const axiosWithAuth = () => {
+    const token = localStorage.getItem('token')
+    return axios.create({
+        baseURL:'http://localhost:9000/api',
+        headers:{
+            authorization:token
+        },
+    })
+
+}
+
+
+
+/* import React from "react";
+import { Route, Navigate } from 'react-router-dom'
 
 export const ProtectedRoute = props => {
 
@@ -11,9 +26,9 @@ export const ProtectedRoute = props => {
                 if(localStorage.getItem('token')){
                     return children
                 }else{
-                    return <Redirect to='/' /* replace={true} */ />
+                    return <Navigate to='/'  replace={true} />
                 }
             }} 
         />     
     )
-}
+} */

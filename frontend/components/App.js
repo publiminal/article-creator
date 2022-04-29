@@ -6,7 +6,7 @@ import LoginForm from './LoginForm'
 import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
-import { ProtectedRoute } from '../axios'
+import { axiosWithAuth } from '../axios'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -64,7 +64,23 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    setMessage('')
+    setSpinnerOn(true)
+    
+
+    axiosWithAuth()
+      .get('/articles')
+      .then(res =>{
+        const {data} = res
+        console.log('getArticles', res)
+        setArticles(data.articles)
+        setMessage(data.message)
+        setSpinnerOn(false)
+    })
+      .catch(err => console.log({err}))    
   }
+
+
 
   const postArticle = article => {
     // ✨ implement
@@ -96,19 +112,22 @@ export default function App() {
         </nav>
         <Routes>
           <Route path="/" element={<LoginForm  login={login}/>} />
-
-{/*           <ProtectedRoute path='articles'>
-          <>
-              <ArticleForm />
-              <Articles />
-          </>
-          </ProtectedRoute>
- */}
           
           <Route path="articles" element={
             <>
-              <ArticleForm />
-              <Articles />
+              <ArticleForm 
+                postArticle={postArticle}
+                updateArticle={updateArticle}
+                setCurrentArticleId={setCurrentArticleId}
+                /* currentArticle={currentArticle} */
+              />
+              <Articles 
+                articles={articles }
+                getArticles={getArticles}
+                deleteArticle={deleteArticle}
+                setCurrentArticleId={setCurrentArticleId}
+                currentArticleId={currentArticleId}
+              />
             </>
           } />
 
