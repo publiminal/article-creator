@@ -5,15 +5,24 @@ const initialFormValues = { title: '', text: '', topic: '' }
 
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
+  const [currentArt, setCurrentArt] = useState({article_id:'' , ...values })
   // ✨ where are my props? Destructure them here
-  const { postArticle, updateArticle, setCurrentArticleId, currentArticle } = props
-
+  const { postArticle, updateArticle, setCurrentArticleId, currentArticle, currentArticleId, getCurrentArticle } = props
+  // const _currentArticle = {article_id:'' , ...initialFormValues }
+  // console.log('init currentArticle', currentArt)
   useEffect(() => {
     // ✨ implement
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
-  })
+    //currentArticle =  
+    // setValues(...)
+    if(currentArticleId){
+      setValues( getCurrentArticle())
+    }
+
+
+  }, [currentArticleId])
 
   const onChange = evt => {
     const { id, value } = evt.target
@@ -30,13 +39,19 @@ export default function ArticleForm(props) {
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
+    return !values.title  && !values.text && !values.topic 
+  }
+
+  const handleCancel = () => {
+    setValues(initialFormValues)
+    setCurrentArticleId(undefined)
   }
 
   return (
     // ✨ fix the JSX: make the heading display either "Edit" or "Create"
     // and replace Function.prototype with the correct function
     <form id="form" onSubmit={onSubmit}>
-      <h2>Create Article</h2>
+      <h2>{currentArticleId ? 'Edit' : 'Create'} Article</h2>
       <input
         maxLength={50}
         onChange={onChange}
@@ -59,7 +74,7 @@ export default function ArticleForm(props) {
       </select>
       <div className="button-group">
         <button disabled={isDisabled()} id="submitArticle">Submit</button>
-        <button onClick={Function.prototype}>Cancel edit</button>
+        <button onClick={handleCancel}>Cancel edit</button>
       </div>
     </form>
   )

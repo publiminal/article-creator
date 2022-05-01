@@ -96,6 +96,12 @@ export default function App() {
 
   const deleteArticle = article_id => {
     // ✨ implement
+    console.log('deleteArticle', article_id)
+  }
+
+  const getCurrentArticle = () => {
+    const currentArticle = articles.find((art) => art.article_id === currentArticleId ) 
+    return currentArticle
   }
 
   return (
@@ -119,7 +125,8 @@ export default function App() {
                 postArticle={postArticle}
                 updateArticle={updateArticle}
                 setCurrentArticleId={setCurrentArticleId}
-                /* currentArticle={currentArticle} */
+                currentArticleId={currentArticleId}
+                getCurrentArticle={getCurrentArticle}
               />
               <Articles 
                 articles={articles }
