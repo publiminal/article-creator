@@ -9,3 +9,8 @@ test('sanity', () => {
   render(<Spinner on={true} />)
 })
 
+test('sanity', () => {
+  // expect(true).toBe(false)
+  render(<Spinner on={false} />)
+})
+
