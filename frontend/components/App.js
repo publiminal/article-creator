@@ -20,7 +20,7 @@ export default function App() {
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => { /* ✨ implement */ }
+  const redirectToLogin = () => { /* ✨ implement */  navigate('/', {replace:true})  }
   const redirectToArticles = () => { /* ✨ implement */ }
 
   const logout = () => {
@@ -29,6 +29,10 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
+    console.log('logout')
+    if(localStorage.getItem('token')){localStorage.removeItem('token')}
+    setMessage('Goodbye!')
+    redirectToLogin()
   }
 
   const login = ({ username, password }) => {
@@ -45,7 +49,7 @@ export default function App() {
     axios
       .post(loginUrl, { username, password })
       .then(res => {
-        console.log(res)
+        // console.log(res)
         localStorage.setItem('token', res.data.token)
         setMessage(res.data.message)
         navigate('/articles', {replace:true}) 
@@ -72,7 +76,7 @@ export default function App() {
       .get('/articles')
       .then(res =>{
         const {data} = res
-        console.log('getArticles', res)
+        // console.log('getArticles', res)
         setArticles(data.articles)
         setMessage(data.message)
         setSpinnerOn(false)
@@ -87,16 +91,62 @@ export default function App() {
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
+    setMessage('')
+    setSpinnerOn(true)
+    axiosWithAuth()
+      .post('/articles', article)
+      .then(res =>{
+        const {data} = res
+        // console.log('postArticle', res)
+        setArticles([...articles, data.article] )
+        setMessage(data.message)
+        setSpinnerOn(false)
+        setCurrentArticleId(undefined)
+
+    })
+      .catch(err => console.log({err})) 
   }
 
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    // console.log('updateArticle', article_id)
+    // console.log('updateArticle', article)
+    setMessage('')
+    setSpinnerOn(true)
+    axiosWithAuth()
+    .put(`articles/${article_id}`, article)
+    .then(res =>{
+      const {data} = res
+      // console.log('updateArticle', res)
+      const indexToUpdate = articles.findIndex(art => art.article_id === article_id)
+      const updatedArticles = [...articles]
+      updatedArticles[indexToUpdate] = data.article
+      setArticles(updatedArticles)
+      setMessage(data.message)
+      setSpinnerOn(false)
+      setCurrentArticleId(undefined)
+  })
+    .catch(err => console.log({err}))  
   }
 
   const deleteArticle = article_id => {
     // ✨ implement
-    console.log('deleteArticle', article_id)
+    // console.log('deleteArticle', article_id)
+    setMessage('')
+    setSpinnerOn(true)
+    
+
+    axiosWithAuth()
+      .delete(`articles/${article_id}`)
+      .then(res =>{
+        const {data} = res
+        // console.log('delete Article', res)
+        setArticles(articles.filter(art => art.article_id !== article_id))
+        setMessage(data.message)
+        setSpinnerOn(false)
+    })
+      .catch(err => console.log({err})) 
   }
 
   const getCurrentArticle = () => {

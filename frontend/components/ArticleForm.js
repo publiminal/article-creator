@@ -5,7 +5,7 @@ const initialFormValues = { title: '', text: '', topic: '' }
 
 export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
-  const [currentArt, setCurrentArt] = useState({article_id:'' , ...values })
+  // const [currentArt, setCurrentArt] = useState({article_id:'' , ...values })
   // ✨ where are my props? Destructure them here
   const { postArticle, updateArticle, setCurrentArticleId, currentArticle, currentArticleId, getCurrentArticle } = props
   // const _currentArticle = {article_id:'' , ...initialFormValues }
@@ -17,16 +17,20 @@ export default function ArticleForm(props) {
     // values of the form. If it's not, we should reset the form back to initial values.
     //currentArticle =  
     // setValues(...)
-    if(currentArticleId){
-      setValues( getCurrentArticle())
-    }
-
-
+      if(currentArticleId){
+        setValues( getCurrentArticle())
+      }else{
+        setValues(initialFormValues)
+      }
   }, [currentArticleId])
 
   const onChange = evt => {
     const { id, value } = evt.target
     setValues({ ...values, [id]: value })
+  }
+  
+  const isValidPost = (title, text, topic) => {
+    return title.trim().length >=1 && text.trim().length >= 1 && topic.trim().length >= 1
   }
 
   const onSubmit = evt => {
@@ -34,12 +38,25 @@ export default function ArticleForm(props) {
     // ✨ implement
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
+    const {article_id, title, text, topic} = values
+    if (!isValidPost(title, text, topic)) {return}
+    if(currentArticleId ){
+      //edit article  API call
+      updateArticle( {article_id, article:{title, text, topic}} )
+    }else{
+      // create article API call
+      // console.log('start create article')
+      // console.log('onSubmit will call createArticle ?', {title, text, topic})
+      postArticle({title, text, topic})
+      setValues(initialFormValues)
+    }
   }
+
 
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
-    return !values.title  && !values.text && !values.topic 
+    return !values.title  || !values.text  || !values.topic
   }
 
   const handleCancel = () => {
