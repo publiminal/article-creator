@@ -22,13 +22,23 @@ const StyledSpinner = styled.div`
 `
 
 export default function Spinner({ on }) {
-  if (!on) return null
-  return (
+  if (!on){
+    return false
+  }else{
+    return(
+    
+      <StyledSpinner id="spinner">
+        <h3>&nbsp;.</h3>&nbsp;&nbsp;&nbsp;Please wait...
+      </StyledSpinner>
+    )
+  } 
+
+/*   return (
     
     <StyledSpinner id="spinner">
       <h3>&nbsp;.</h3>&nbsp;&nbsp;&nbsp;Please wait...
     </StyledSpinner>
-  )
+  ) */
 }
 
 Spinner.propTypes = {
