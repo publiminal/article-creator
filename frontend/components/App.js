@@ -119,10 +119,11 @@ export default function App() {
     .then(res =>{
       const {data} = res
       // console.log('updateArticle', res)
-      const indexToUpdate = articles.findIndex(art => art.article_id === article_id)
-      const updatedArticles = [...articles]
-      updatedArticles[indexToUpdate] = data.article
-      setArticles(updatedArticles)
+      // const indexToUpdate = articles.findIndex(art => art.article_id === article_id)
+      // const updatedArticles = [...articles]
+      // updatedArticles[indexToUpdate] = data.article
+      // setArticles(updatedArticles)
+      setArticles([data.article,  ...articles.filter(art => art.article_id !== article_id)  ])
       setMessage(data.message)
       setSpinnerOn(false)
       setCurrentArticleId(undefined)
@@ -142,7 +143,7 @@ export default function App() {
       .then(res =>{
         const {data} = res
         // console.log('delete Article', res)
-        setArticles(articles.filter(art => art.article_id !== article_id))
+        setArticles(...articles.filter(art => art.article_id !== article_id))
         setMessage(data.message)
         setSpinnerOn(false)
     })
